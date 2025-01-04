@@ -1,0 +1,13 @@
+package mana.doodleking;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class DoodlekingApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
