@@ -1,13 +1,13 @@
 package mana.doodleking.domain.room;
 
 import lombok.AllArgsConstructor;
-import mana.doodleking.domain.room.dto.CreateRoomRes;
+import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.PostRoomReq;
+import mana.doodleking.domain.room.dto.RoomSimple;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -17,8 +17,16 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public CreateRoomRes createRoom(@RequestBody PostRoomReq postRoomReq) {
+    public RoomDetail createRoom(@RequestBody PostRoomReq postRoomReq) {
         Room createdRoom = roomService.createRoom(postRoomReq);
-        return CreateRoomRes.from(createdRoom);
+        return RoomDetail.from(createdRoom);
+    }
+
+    @GetMapping
+    public List<RoomSimple> getRoomList() {
+        List<Room> roomList = roomService.getRoomList();
+        return roomList.stream()
+                .map(RoomSimple::from)
+                .toList();
     }
 }
