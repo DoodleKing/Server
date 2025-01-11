@@ -19,7 +19,8 @@ public class Room {
     private String name;
     private Subject subject;
     private RoomState roomState;
-    private Long player;
+    private Long maxPlayer;
+    private Long curPlayer;
     private String password;
     private Long time;
     private Long round;
@@ -29,11 +30,12 @@ public class Room {
     private List<UserRoom> userRoomList;
 
     @Builder
-    private Room(String name, Subject subject, RoomState roomState, Long player, String password, Long time, Long round, Boolean hint) {
+    private Room(String name, Subject subject, RoomState roomState, Long maxPlayer, Long curPlayer, String password, Long time, Long round, Boolean hint) {
         this.name = name;
         this.subject = subject;
         this.roomState = roomState;
-        this.player = player;
+        this.maxPlayer = maxPlayer;
+        this.curPlayer = curPlayer;
         this.password = password;
         this.time = time;
         this.round = round;
@@ -45,7 +47,8 @@ public class Room {
             .name(postRoomReq.getName())
             .subject(postRoomReq.getSubject())
             .roomState(postRoomReq.getRoomState())
-            .player(postRoomReq.getPlayer())
+            .maxPlayer(postRoomReq.getMaxPlayer())
+            .curPlayer(1L)
             .password(postRoomReq.getPassword())
             .time(postRoomReq.getTime())
             .round(postRoomReq.getRound())

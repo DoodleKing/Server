@@ -13,7 +13,8 @@ public class RoomDetail {
     private String name;
     private Subject subject;
     private RoomState roomState;
-    private Long player;
+    private Long maxPlayer;
+    private Long curPlayer;
     private Long time;
     private Long round;
     private Boolean hint;
@@ -24,7 +25,8 @@ public class RoomDetail {
                 .name(room.getName())
                 .subject(room.getSubject())
                 .roomState(room.getRoomState())
-                .player(room.getPlayer())
+                .maxPlayer(room.getMaxPlayer())
+                .curPlayer(room.getCurPlayer())
                 .time(room.getTime())
                 .round(room.getRound())
                 .hint(room.getHint())
