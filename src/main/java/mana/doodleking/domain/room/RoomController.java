@@ -27,16 +27,12 @@ public class RoomController {
     private final SimpMessagingTemplate messagingTemplate;
     @PostMapping
     public RoomDetail createRoom(@RequestBody PostRoomReq postRoomReq) {
-        Room createdRoom = roomService.createRoom(postRoomReq);
-        return RoomDetail.from(createdRoom);
+        return roomService.createRoom(postRoomReq);
     }
 
     @GetMapping
     public List<RoomSimple> getRoomList() {
-        List<Room> roomList = roomService.getRoomList();
-        return roomList.stream()
-                .map(RoomSimple::from)
-                .toList();
+        return roomService.getRoomList();
     }
     @MessageMapping("/init")
     @SendTo("/topic/init")
@@ -49,11 +45,11 @@ public class RoomController {
     @SendTo("/topic/lobby")
     public APIResponse<List<RoomSimple>> sendMessage(@Header("simpSessionId") String userId, PostRoomReq postRoomReq) {
         String dest = "/queue/user/" + userId;
-        Room createdRoom = roomService.createRoom(postRoomReq);
+        RoomDetail createdRoom = roomService.createRoom(postRoomReq);
         log.info(dest);
-        messagingTemplate.convertAndSend(dest, APIResponse.success(RoomDetail.from(createdRoom)));
+        messagingTemplate.convertAndSend(dest, APIResponse.success(createdRoom));
 
-        List<Room> roomList = roomService.getRoomList();
-        return APIResponse.success(roomList.stream().map(RoomSimple::from).toList());
+        List<RoomSimple> roomList = roomService.getRoomList();
+        return APIResponse.success(roomList);
     }
 }
