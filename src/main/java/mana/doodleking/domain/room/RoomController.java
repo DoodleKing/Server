@@ -45,13 +45,15 @@ public class RoomController {
         return message;
     }
 
-    @MessageMapping("/test")
+    @MessageMapping("/createRoom")
     @SendTo("/topic/lobby")
-    public APIResponse<List<RoomSimple>> sendMessage(@Header("simpSessionId") String userId, RequestChatContentsDto message) {
-        List<Room> roomList = roomService.getRoomList();
-        String dest = "/topic/my/" + userId;
+    public APIResponse<List<RoomSimple>> sendMessage(@Header("simpSessionId") String userId, PostRoomReq postRoomReq) {
+        String dest = "/queue/user/" + userId;
+        Room createdRoom = roomService.createRoom(postRoomReq);
         log.info(dest);
-        messagingTemplate.convertAndSend(dest, APIResponse.success(roomList.stream().map(RoomSimple::from).toList()));
+        messagingTemplate.convertAndSend(dest, APIResponse.success(RoomDetail.from(createdRoom)));
+
+        List<Room> roomList = roomService.getRoomList();
         return APIResponse.success(roomList.stream().map(RoomSimple::from).toList());
     }
 }
