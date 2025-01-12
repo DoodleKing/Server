@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.dto.RoomSimple;
+import mana.doodleking.domain.user.dto.CreateUserRes;
+import mana.doodleking.global.response.APIResponse;
 import mana.doodleking.websocket.RequestChatContentsDto;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -45,12 +47,11 @@ public class RoomController {
 
     @MessageMapping("/test")
     @SendTo("/topic/lobby")
-    public RequestChatContentsDto sendMessage(@Header("simpSessionId") String userId, RequestChatContentsDto message) {
+    public APIResponse<List<RoomSimple>> sendMessage(@Header("simpSessionId") String userId, RequestChatContentsDto message) {
         List<Room> roomList = roomService.getRoomList();
         String dest = "/topic/my/" + userId;
         log.info(dest);
-        messagingTemplate.convertAndSend(dest, message);
-        message.setContents(userId + " " + roomList.toString());
-        return message;
+        messagingTemplate.convertAndSend(dest, APIResponse.success(roomList.stream().map(RoomSimple::from).toList()));
+        return APIResponse.success(roomList.stream().map(RoomSimple::from).toList());
     }
 }
