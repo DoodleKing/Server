@@ -21,7 +21,8 @@ public class RoomService {
     private final UserRepository userRepository;
 
     public RoomDetail createRoom(Long userId, PostRoomReq postRoomReq) {
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자 id: " + userId));
         Room createdRoom = roomRepository.save(Room.from(postRoomReq));
 
         UserRoom userRoom = UserRoom.of(UserRole.LEADER, user, createdRoom);

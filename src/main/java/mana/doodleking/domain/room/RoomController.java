@@ -33,10 +33,14 @@ public class RoomController {
 
     @MessageMapping("/createRoom")
     public void sendMessage(@Header("userId") Long userId, PostRoomReq postRoomReq) {
-        RoomDetail createdRoom = roomService.createRoom(userId, postRoomReq);
-        messageSender.send("/queue/user/" + userId, createdRoom);
+        try {
+            RoomDetail createdRoom = roomService.createRoom(userId, postRoomReq);
+            messageSender.send("/queue/user/" + userId, createdRoom);
 
-        List<RoomSimple> roomList = getRoomList();
-        messageSender.send("/topic/lobby", roomList);
+            List<RoomSimple> roomList = getRoomList();
+            messageSender.send("/topic/lobby", roomList);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
     }
 }
