@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.RoomSimple;
+import mana.doodleking.domain.room.repository.RoomRepository;
+import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.User;
 import mana.doodleking.domain.user.UserRole;
 import mana.doodleking.domain.user.repository.UserRepository;
-import mana.doodleking.global.response.APIResponse;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
