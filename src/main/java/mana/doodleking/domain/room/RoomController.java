@@ -6,6 +6,7 @@ import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.dto.RoomSimple;
 import mana.doodleking.domain.user.dto.CreateUserRes;
+import mana.doodleking.global.MessageSender;
 import mana.doodleking.global.response.APIResponse;
 import mana.doodleking.websocket.RequestChatContentsDto;
 import org.springframework.messaging.handler.annotation.Header;
@@ -24,8 +25,7 @@ import java.util.List;
 @Slf4j
 public class RoomController {
     private final RoomService roomService;
-    private final SimpMessagingTemplate messagingTemplate;
-
+    private final MessageSender messageSender;
     @GetMapping
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
@@ -33,7 +33,10 @@ public class RoomController {
 
     @MessageMapping("/createRoom")
     public void sendMessage(@Header("userId") Long userId, PostRoomReq postRoomReq) {
-        roomService.sendRoomToCreatedUser(userId, postRoomReq);
-        roomService.sendRoomListToLobby();
+        RoomDetail createdRoom = roomService.createRoom(userId, postRoomReq);
+        messageSender.send("/queue/user/" + userId, createdRoom);
+
+        List<RoomSimple> roomList = getRoomList();
+        messageSender.send("/topic/lobby", roomList);
     }
 }

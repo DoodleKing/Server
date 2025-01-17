@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class RoomService {
-    private final SimpMessagingTemplate messagingTemplate;
     private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
     private final UserRepository userRepository;
@@ -36,17 +35,5 @@ public class RoomService {
         return roomList.stream()
                 .map(RoomSimple::from)
                 .toList();
-    }
-
-    public void sendRoomToCreatedUser(Long userId, PostRoomReq postRoomReq) {
-        String dest = "/queue/user/" + userId;
-        RoomDetail createdRoom = createRoom(userId, postRoomReq);
-        messagingTemplate.convertAndSend(dest, APIResponse.success(createdRoom));
-    }
-
-    public void sendRoomListToLobby() {
-        String dest = "/topic/lobby";
-        List<RoomSimple> roomList = getRoomList();
-        messagingTemplate.convertAndSend(dest, APIResponse.success(roomList));
     }
 }
