@@ -41,6 +41,7 @@ public class RoomController {
             messageSender.send("/topic/lobby", roomList);
         } catch (Exception e) {
             log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, e.getMessage());
         }
     }
 }
