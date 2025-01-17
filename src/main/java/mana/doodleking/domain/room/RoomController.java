@@ -25,21 +25,11 @@ import java.util.List;
 public class RoomController {
     private final RoomService roomService;
     private final SimpMessagingTemplate messagingTemplate;
-//    @PostMapping
-//    public RoomDetail createRoom(@RequestBody PostRoomReq postRoomReq) {
-//        return roomService.createRoom(postRoomReq);
-//    }
 
     @GetMapping
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
-//    @MessageMapping("/init")
-//    @SendTo("/topic/init")
-//    public RequestChatContentsDto init(@Header("simpSessionId") String sessionId, RequestChatContentsDto message) {
-//        message.setContents(sessionId);
-//        return message;
-//    }
 
     @MessageMapping("/createRoom")
     public void sendMessage(@Header("userId") Long userId, PostRoomReq postRoomReq) {
