@@ -1,8 +1,8 @@
 package mana.doodleking.domain.room.dto;
 
 import lombok.Getter;
-import mana.doodleking.domain.room.RoomState;
-import mana.doodleking.domain.room.Subject;
+import mana.doodleking.domain.room.enums.RoomState;
+import mana.doodleking.domain.room.enums.Subject;
 
 @Getter
 public class PostRoomReq {
