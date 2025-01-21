@@ -34,12 +34,6 @@ public class RoomController {
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
-    @MessageMapping("/init")
-    @SendTo("/topic/init")
-    public RequestChatContentsDto init(@Header("simpSessionId") String sessionId, RequestChatContentsDto message) {
-        message.setContents(sessionId);
-        return message;
-    }
 
     @MessageMapping("/createRoom")
     @SendTo("/topic/lobby")
