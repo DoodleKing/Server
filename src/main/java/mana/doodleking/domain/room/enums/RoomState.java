@@ -1,4 +1,4 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.enums;
 
 public enum RoomState {
     WAIT, PLAY, QUIT

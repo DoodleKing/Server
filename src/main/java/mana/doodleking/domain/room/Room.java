@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mana.doodleking.domain.room.dto.PostRoomReq;
+import mana.doodleking.domain.room.enums.RoomState;
+import mana.doodleking.domain.room.enums.Subject;
 
 import java.util.List;
 
