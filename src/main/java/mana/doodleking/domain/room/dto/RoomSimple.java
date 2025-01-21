@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import mana.doodleking.domain.room.Room;
 import mana.doodleking.domain.room.enums.RoomState;
+import mana.doodleking.domain.room.enums.Subject;
 
 @Builder
 @Getter
@@ -16,6 +17,7 @@ public class RoomSimple {
     private Long maxPlayer;
     private Long curPlayer;
     private boolean privateRoom;
+    private Subject subject;
 
     public static RoomSimple from(Room room) {
         return RoomSimple.builder()
@@ -25,6 +27,7 @@ public class RoomSimple {
                 .maxPlayer(room.getMaxPlayer())
                 .curPlayer(room.getCurPlayer())
                 .privateRoom(room.getPassword() != null)
+                .subject(room.getSubject())
                 .build();
     }
 }
