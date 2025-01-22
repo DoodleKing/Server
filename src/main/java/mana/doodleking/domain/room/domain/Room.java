@@ -1,9 +1,10 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.enums.Subject;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "room")
 @NoArgsConstructor
 public class Room {
