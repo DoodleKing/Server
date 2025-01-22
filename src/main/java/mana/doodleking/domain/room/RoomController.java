@@ -2,17 +2,13 @@ package mana.doodleking.domain.room;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mana.doodleking.domain.room.dto.EnterRoomReq;
 import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.dto.RoomSimple;
-import mana.doodleking.domain.user.dto.CreateUserRes;
 import mana.doodleking.global.MessageSender;
-import mana.doodleking.global.response.APIResponse;
-import mana.doodleking.websocket.RequestChatContentsDto;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +36,23 @@ public class RoomController {
             List<RoomSimple> roomList = getRoomList();
             messageSender.send("/topic/lobby", roomList);
         } catch (Exception e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, e.getMessage());
+        }
+    }
+
+    @MessageMapping("/enterRoom")
+    public void enterRoom(@Header("userId") Long userId, EnterRoomReq enterRoomReq) {
+        try {
+            RoomDetail enterRoom = roomService.enterRoom(userId, enterRoomReq);
+            messageSender.send("/queue/user/" + userId, enterRoom);
+
+            messageSender.send("/topic/room/" + enterRoomReq.getRoomId(), enterRoom);
+
+            List<RoomSimple> roomList = roomService.getRoomList();
+            messageSender.send("/topic/lobby", roomList);
+        }
+        catch (Exception e) {
             log.warn(e.getMessage());
             messageSender.sendError("/queue/user/" + userId, e.getMessage());
         }
