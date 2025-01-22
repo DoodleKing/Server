@@ -26,6 +26,7 @@ public class RoomService {
     private final UserRoomRepository userRoomRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public RoomDetail createRoom(Long userId, PostRoomReq postRoomReq) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자 id: " + userId));
