@@ -29,6 +29,8 @@ public class Room {
     private Long time;
     private Long round;
     private Boolean hint;
+    @Version
+    private Long version;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoom> userRoomList;

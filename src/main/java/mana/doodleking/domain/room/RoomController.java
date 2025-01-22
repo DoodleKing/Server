@@ -1,5 +1,6 @@
 package mana.doodleking.domain.room;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.room.dto.EnterRoomReq;
@@ -51,6 +52,10 @@ public class RoomController {
 
             List<RoomSimple> roomList = roomService.getRoomList();
             messageSender.send("/topic/lobby", roomList);
+        }
+        catch (OptimisticLockException e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, "동시성 문제 발생: 다시 시도해주세요.");
         }
         catch (Exception e) {
             log.warn(e.getMessage());
