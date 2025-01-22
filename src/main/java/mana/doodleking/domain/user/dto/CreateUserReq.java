@@ -1,9 +1,11 @@
 package mana.doodleking.domain.user.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class CreateUserReq {
     @NotNull(message = "값을 입력해주세요.")
     @Positive(message = "양수 형태여야 합니다.")

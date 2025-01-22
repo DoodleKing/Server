@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("")
-    private ResponseEntity<APIResponse<CreateUserRes>> userCreate(@RequestBody @Valid CreateUserReq createUserReq) throws Exception {
+    public ResponseEntity<APIResponse<CreateUserRes>> createUser(@RequestBody @Valid CreateUserReq createUserReq) throws Exception {
         // 유저명 중복 검증
         userService.validUserName(createUserReq.getUserName());
         // 캐릭터 ID 존재 검증
