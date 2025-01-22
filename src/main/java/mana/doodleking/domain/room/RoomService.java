@@ -13,6 +13,7 @@ import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserRole;
 import mana.doodleking.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class RoomService {
                 .toList();
     }
 
+    @Transactional
     public RoomDetail enterRoom(Long userId, EnterRoomReq enterRoomReq) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자 id: " + userId));
@@ -49,7 +51,6 @@ public class RoomService {
 
         // 방 현재 인원 변경
         enterRoom.setCurPlayer(enterRoom.getCurPlayer() + 1L);
-        roomRepository.save(enterRoom);
 
         // 유저 방 소속 관계 생성
         UserRoom userRoom = UserRoom.of(UserRole.MEMBER, user, enterRoom);
