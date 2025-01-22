@@ -24,6 +24,11 @@ public class UserService {
             throw new Exception("존재하지 않는 캐릭터 ID입니다. : " + characterId);
     }
 
+    public User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자 id: " + userId));
+    }
+
     public User createUser(CreateUserReq createUserReq) throws Exception {
         Character character = characterRepository.findCharacterById(createUserReq.getCharacterId());
 
