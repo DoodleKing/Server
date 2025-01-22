@@ -3,7 +3,7 @@ package mana.doodleking.domain.room.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import mana.doodleking.domain.room.Room;
+import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.enums.Subject;
 

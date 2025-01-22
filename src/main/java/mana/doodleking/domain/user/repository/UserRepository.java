@@ -1,6 +1,6 @@
 package mana.doodleking.domain.user.repository;
 
-import mana.doodleking.domain.user.User;
+import mana.doodleking.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
