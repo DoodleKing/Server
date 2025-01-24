@@ -8,7 +8,7 @@ import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserRole;
-import mana.doodleking.domain.user.service.UserService;
+import mana.doodleking.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +17,15 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class RoomService {
-    private final UserService userService;
-    private final UserRoomService userRoomService;
+    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
+    private final UserRoomService userRoomService;
 
     @Transactional
     public RoomDetail createRoom(Long userId, PostRoomReq postRoomReq) {
-        User user = userService.getUserOrThrow(userId);
         Room createdRoom = roomRepository.save(Room.from(postRoomReq));
+        User user = userRepository.findByIdOrThrow(userId);
 
         userRoomRepository.save(UserRoom.of(UserRole.LEADER, user, createdRoom));
 
@@ -33,8 +33,8 @@ public class RoomService {
     }
 
     public RoomDetail updateRoom(Long userId, UpdateRoomReq updateRoomReq) {
-        User user = userService.getUserOrThrow(userId);
-        Room room = roomRepository.findById(updateRoomReq.getId()).orElseThrow(() -> new RuntimeException("존재하지 않는 room id: " + updateRoomReq.getId()));
+        Room room = roomRepository.findByIdOrThrow(updateRoomReq.getId());
+        User user = userRepository.findByIdOrThrow(userId);
 
         userRoomService.isUserInRoom(user, room);
 
@@ -52,8 +52,8 @@ public class RoomService {
 
     @Transactional
     public RoomDetail enterRoom(Long userId, RoomIdDTO enterRoomReq) {
-        User user = userService.getUserOrThrow(userId);
-        Room enterRoom = getRoomOrThrow(enterRoomReq.getRoomId());
+        Room enterRoom = roomRepository.findByIdOrThrow(enterRoomReq.getRoomId());
+        User user = userRepository.findByIdOrThrow(userId);
 
         // 해당 유저 방 소속 여부 확인
         userRoomService.checkUserInRoom(user);
@@ -68,8 +68,8 @@ public class RoomService {
 
     @Transactional
     public RoomDetail quitRoom(Long userId, RoomIdDTO roomIdDTO) {
-        User user = userService.getUserOrThrow(userId);
-        Room quitRoom = getRoomOrThrow(roomIdDTO.getRoomId());
+        Room quitRoom = roomRepository.findByIdOrThrow(roomIdDTO.getRoomId());
+        User user = userRepository.findByIdOrThrow(userId);
 
         // 해당 유저 방 소속 여부 확인
         userRoomService.isUserInRoom(user, quitRoom);
@@ -87,12 +87,7 @@ public class RoomService {
         return RoomDetail.from(quitRoom);
     }
 
-    private Room getRoomOrThrow(Long roomId) {
-        return roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 방 id: " + roomId));
-    }
-
     private void deleteRoom(Long roomId) {
-        roomRepository.delete(getRoomOrThrow(roomId));
+        roomRepository.delete(roomRepository.findByIdOrThrow(roomId));
     }
 }
