@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserRole;
 import mana.doodleking.domain.user.enums.UserState;
@@ -11,6 +12,7 @@ import mana.doodleking.domain.user.enums.UserState;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name = "user_room")
 public class UserRoom {
     @Id

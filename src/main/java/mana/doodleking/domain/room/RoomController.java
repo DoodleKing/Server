@@ -3,9 +3,9 @@ package mana.doodleking.domain.room;
 import jakarta.persistence.OptimisticLockException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mana.doodleking.domain.room.dto.EnterRoomReq;
 import mana.doodleking.domain.room.dto.RoomDetail;
 import mana.doodleking.domain.room.dto.PostRoomReq;
+import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.dto.RoomSimple;
 import mana.doodleking.global.MessageSender;
 import org.springframework.messaging.handler.annotation.Header;
@@ -43,12 +43,33 @@ public class RoomController {
     }
 
     @MessageMapping("/enterRoom")
-    public void enterRoom(@Header("userId") Long userId, EnterRoomReq enterRoomReq) {
+    public void enterRoom(@Header("userId") Long userId, RoomIdDTO roomIdDTO) {
         try {
-            RoomDetail enterRoom = roomService.enterRoom(userId, enterRoomReq);
+            RoomDetail enterRoom = roomService.enterRoom(userId, roomIdDTO);
             messageSender.send("/queue/user/" + userId, enterRoom);
 
-            messageSender.send("/topic/room/" + enterRoomReq.getRoomId(), enterRoom);
+            messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), enterRoom);
+
+            List<RoomSimple> roomList = roomService.getRoomList();
+            messageSender.send("/topic/lobby", roomList);
+        }
+        catch (OptimisticLockException e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, "동시성 문제 발생: 다시 시도해주세요.");
+        }
+        catch (Exception e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, e.getMessage());
+        }
+    }
+
+    @MessageMapping("/quitRoom")
+    public void quitRoom(@Header("userId") Long userId, RoomIdDTO roomIdDTO) {
+        try {
+            RoomDetail quitRoom = roomService.quitRoom(userId, roomIdDTO);
+            messageSender.send("/queue/user/" + userId, quitRoom);
+
+            messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), quitRoom);
 
             List<RoomSimple> roomList = roomService.getRoomList();
             messageSender.send("/topic/lobby", roomList);
