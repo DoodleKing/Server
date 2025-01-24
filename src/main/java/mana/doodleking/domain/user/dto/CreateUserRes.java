@@ -2,7 +2,7 @@ package mana.doodleking.domain.user.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import mana.doodleking.domain.user.User;
+import mana.doodleking.domain.user.domain.User;
 
 @Getter
 public class CreateUserRes {

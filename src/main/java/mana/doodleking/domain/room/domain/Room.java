@@ -1,9 +1,10 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mana.doodleking.domain.room.dto.PostRoomReq;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.enums.Subject;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "room")
 @NoArgsConstructor
 public class Room {
@@ -27,6 +29,8 @@ public class Room {
     private Long time;
     private Long round;
     private Boolean hint;
+    @Version
+    private Long version;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoom> userRoomList;

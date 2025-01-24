@@ -1,11 +1,11 @@
-package mana.doodleking.domain.user;
+package mana.doodleking.domain.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mana.doodleking.domain.room.UserRoom;
+import mana.doodleking.domain.room.domain.UserRoom;
 import java.time.LocalDateTime;
 import java.util.List;
 

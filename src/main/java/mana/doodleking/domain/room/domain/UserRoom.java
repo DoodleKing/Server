@@ -1,16 +1,18 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mana.doodleking.domain.user.User;
-import mana.doodleking.domain.user.UserRole;
-import mana.doodleking.domain.user.UserState;
+import lombok.Setter;
+import mana.doodleking.domain.user.domain.User;
+import mana.doodleking.domain.user.enums.UserRole;
+import mana.doodleking.domain.user.enums.UserState;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name = "user_room")
 public class UserRoom {
     @Id
