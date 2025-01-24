@@ -26,7 +26,7 @@ public class RoomController implements RoomControllerDocs {
     }
 
     @MessageMapping("/createRoom")
-    public void sendMessage(@Header("userId") Long userId, @Valid CreateRoomReq postRoomReq) {
+    public void createRoom(@Header("userId") Long userId, @Valid CreateRoomReq postRoomReq) {
         try {
             RoomDetail createdRoom = roomService.createRoom(userId, postRoomReq);
             messageSender.send("/queue/user/" + userId, createdRoom);

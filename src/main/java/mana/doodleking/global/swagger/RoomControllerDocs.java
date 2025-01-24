@@ -2,7 +2,7 @@ package mana.doodleking.global.swagger;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import mana.doodleking.domain.room.dto.PostRoomReq;
+import mana.doodleking.domain.room.dto.CreateRoomReq;
 import mana.doodleking.domain.room.dto.RoomSimple;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -25,5 +25,5 @@ public interface RoomControllerDocs {
         전체 로비에 있는 사용자들(/topic/lobby)에게도 전체 게임방 목록이 전송됩니다.
         """
     )
-    void createRoom(Long userId, PostRoomReq postRoomReq);
+    void createRoom(Long userId, CreateRoomReq postRoomReq);
 }
