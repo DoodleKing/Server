@@ -1,11 +1,9 @@
 package mana.doodleking.domain.room.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import mana.doodleking.domain.room.dto.PostRoomReq;
+import lombok.*;
+import mana.doodleking.domain.room.dto.CreateRoomReq;
+import mana.doodleking.domain.room.dto.UpdateRoomReq;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.enums.Subject;
 
@@ -16,6 +14,8 @@ import java.util.List;
 @Setter
 @Table(name = "room")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,20 +35,7 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoom> userRoomList;
 
-    @Builder
-    private Room(String name, Subject subject, RoomState roomState, Long maxPlayer, Long curPlayer, String password, Long time, Long round, Boolean hint) {
-        this.name = name;
-        this.subject = subject;
-        this.roomState = roomState;
-        this.maxPlayer = maxPlayer;
-        this.curPlayer = curPlayer;
-        this.password = password;
-        this.time = time;
-        this.round = round;
-        this.hint = hint;
-    }
-
-    public static Room from(PostRoomReq postRoomReq) {
+    public static Room from(CreateRoomReq postRoomReq) {
         return Room.builder()
             .name(postRoomReq.getName())
             .subject(postRoomReq.getSubject())
@@ -59,6 +46,23 @@ public class Room {
             .time(postRoomReq.getTime())
             .round(postRoomReq.getRound())
             .hint(postRoomReq.getHint())
+            .build();
+    }
+
+    public Room update(UpdateRoomReq updateRoomReq) {
+        return Room.builder()
+            .id(this.id)
+            .name(updateRoomReq.getName() != null ? updateRoomReq.getName() : this.name)
+            .subject(updateRoomReq.getSubject() != null ? updateRoomReq.getSubject() : this.subject)
+            .maxPlayer(updateRoomReq.getMaxPlayer() != null ? updateRoomReq.getMaxPlayer() : this.maxPlayer)
+            .password(updateRoomReq.getPassword() != null ? updateRoomReq.getPassword() : this.password)
+            .time(updateRoomReq.getTime() != null ? updateRoomReq.getTime() : this.time)
+            .round(updateRoomReq.getRound() != null ? updateRoomReq.getRound() : this.round)
+            .hint(updateRoomReq.getHint() != null ? updateRoomReq.getHint() : this.hint)
+            .roomState(this.roomState)
+            .curPlayer(this.curPlayer)
+            .userRoomList(this.userRoomList)
+            .version(this.version)
             .build();
     }
 }
