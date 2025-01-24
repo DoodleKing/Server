@@ -2,7 +2,7 @@ package mana.doodleking.domain.room.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import mana.doodleking.domain.room.dto.PostRoomReq;
+import mana.doodleking.domain.room.dto.CreateRoomReq;
 import mana.doodleking.domain.room.dto.UpdateRoomReq;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.enums.Subject;
@@ -35,7 +35,7 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoom> userRoomList;
 
-    public static Room from(PostRoomReq postRoomReq) {
+    public static Room from(CreateRoomReq postRoomReq) {
         return Room.builder()
             .name(postRoomReq.getName())
             .subject(postRoomReq.getSubject())

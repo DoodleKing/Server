@@ -23,7 +23,7 @@ public class RoomService {
     private final UserRoomService userRoomService;
 
     @Transactional
-    public RoomDetail createRoom(Long userId, PostRoomReq postRoomReq) {
+    public RoomDetail createRoom(Long userId, CreateRoomReq postRoomReq) {
         Room createdRoom = roomRepository.save(Room.from(postRoomReq));
         User user = userRepository.findByIdOrThrow(userId);
 

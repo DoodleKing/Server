@@ -1,6 +1,7 @@
 package mana.doodleking.domain.room;
 
 import jakarta.persistence.OptimisticLockException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.room.dto.*;
@@ -26,7 +27,7 @@ public class RoomController {
     }
 
     @MessageMapping("/createRoom")
-    public void sendMessage(@Header("userId") Long userId, PostRoomReq postRoomReq) {
+    public void sendMessage(@Header("userId") Long userId, @Valid CreateRoomReq postRoomReq) {
         try {
             RoomDetail createdRoom = roomService.createRoom(userId, postRoomReq);
             messageSender.send("/queue/user/" + userId, createdRoom);
@@ -40,7 +41,7 @@ public class RoomController {
     }
 
     @MessageMapping("/updateRoom")
-    public void updateRoom(@Header("userId") Long userId, UpdateRoomReq updateRoomReq) {
+    public void updateRoom(@Header("userId") Long userId, @Valid UpdateRoomReq updateRoomReq) {
         try {
             RoomDetail updatedRoom = roomService.updateRoom(userId, updateRoomReq);
             messageSender.send("/topic/room/" + updateRoomReq.getId(), updatedRoom);
