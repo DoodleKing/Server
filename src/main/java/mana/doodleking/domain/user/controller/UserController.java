@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UserControllerDocs {
     private final UserService userService;
 
-    @Operation(summary = "사용자 생성")
     @PostMapping
     public ResponseEntity<APIResponse<CreateUserRes>> userCreate(@RequestBody @Valid CreateUserReq createUserReq) throws Exception {
         // 유저명 중복 검증

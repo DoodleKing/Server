@@ -1,6 +1,7 @@
 package mana.doodleking.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import mana.doodleking.domain.user.Character;
 import mana.doodleking.domain.user.User;
 import mana.doodleking.domain.user.dto.CreateUserReq;
 import mana.doodleking.domain.user.repository.CharacterRepository;
@@ -24,12 +25,12 @@ public class UserService {
     }
 
     public User createUser(CreateUserReq createUserReq) throws Exception {
-        User createUser = User.of(createUserReq.getUserName(),
-                 characterRepository.findCharacterById(createUserReq.getCharacterId()));
+        Character character = characterRepository.findCharacterById(createUserReq.getCharacterId());
 
-        if (createUser == null)
+        if (character == null)
             throw new Exception("유저 생성에 실패했습니다.");
 
+        User createUser = User.of(createUserReq.getUserName(), character);
         return userRepository.save(createUser);
     }
 }
