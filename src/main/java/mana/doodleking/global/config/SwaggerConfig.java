@@ -21,8 +21,12 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("DoodleKing")
-                .description("실시간 그림 퀴즈 게임")
-                .version("1.0.0");
+            .title("DoodleKing")
+            .description("""
+                socket 관련 명세인 경우 해당 메시지(socket) 형식으로 문서화를 하였습니다.\n
+                HTTP 명세의 경우는 테스트가 가능하지만, socket 관련 명세는 테스트가 불가능합니다.
+                """
+            )
+            .version("1.0.0");
     }
 }
