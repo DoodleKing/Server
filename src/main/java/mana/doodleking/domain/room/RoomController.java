@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.room.dto.*;
 import mana.doodleking.global.MessageSender;
+import mana.doodleking.global.swagger.RoomControllerDocs;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -15,13 +16,11 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/api/room")
-@RestController
 @Slf4j
-public class RoomController {
+public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
-    @GetMapping
+    @GetMapping("/api/v1/room")
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
