@@ -3,10 +3,7 @@ package mana.doodleking.domain.room;
 import jakarta.persistence.OptimisticLockException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mana.doodleking.domain.room.dto.RoomDetail;
-import mana.doodleking.domain.room.dto.PostRoomReq;
-import mana.doodleking.domain.room.dto.RoomIdDTO;
-import mana.doodleking.domain.room.dto.RoomSimple;
+import mana.doodleking.domain.room.dto.*;
 import mana.doodleking.global.MessageSender;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -36,6 +33,18 @@ public class RoomController {
 
             List<RoomSimple> roomList = getRoomList();
             messageSender.send("/topic/lobby", roomList);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, e.getMessage());
+        }
+    }
+
+    @MessageMapping("/updateRoom")
+    public void updateRoom(@Header("userId") Long userId, UpdateRoomReq updateRoomReq) {
+        try {
+            RoomDetail updatedRoom = roomService.updateRoom(userId, updateRoomReq);
+            messageSender.send("/topic/room/" + updateRoomReq.getId(), updatedRoom);
+
         } catch (Exception e) {
             log.warn(e.getMessage());
             messageSender.sendError("/queue/user/" + userId, e.getMessage());

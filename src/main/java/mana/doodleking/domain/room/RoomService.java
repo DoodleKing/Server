@@ -3,10 +3,7 @@ package mana.doodleking.domain.room;
 import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
-import mana.doodleking.domain.room.dto.PostRoomReq;
-import mana.doodleking.domain.room.dto.RoomDetail;
-import mana.doodleking.domain.room.dto.RoomIdDTO;
-import mana.doodleking.domain.room.dto.RoomSimple;
+import mana.doodleking.domain.room.dto.*;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
@@ -33,6 +30,17 @@ public class RoomService {
         userRoomRepository.save(UserRoom.of(UserRole.LEADER, user, createdRoom));
 
         return RoomDetail.from(createdRoom);
+    }
+
+    public RoomDetail updateRoom(Long userId, UpdateRoomReq updateRoomReq) {
+        User user = userService.getUserOrThrow(userId);
+        Room room = roomRepository.findById(updateRoomReq.getId()).orElseThrow(() -> new RuntimeException("존재하지 않는 room id: " + updateRoomReq.getId()));
+
+        userRoomService.isUserInRoom(user, room);
+
+        Room updatedRoom = room.update(updateRoomReq);
+
+        return RoomDetail.from(updatedRoom);
     }
 
     public List<RoomSimple> getRoomList() {
