@@ -1,4 +1,4 @@
-package mana.doodleking.domain.user;
+package mana.doodleking.domain.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;

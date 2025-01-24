@@ -1,8 +1,8 @@
 package mana.doodleking.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import mana.doodleking.domain.user.Character;
-import mana.doodleking.domain.user.User;
+import mana.doodleking.domain.user.domain.Character;
+import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.dto.CreateUserReq;
 import mana.doodleking.domain.user.repository.CharacterRepository;
 import mana.doodleking.domain.user.repository.UserRepository;
@@ -22,6 +22,11 @@ public class UserService {
     public void validCharacter(Long characterId) throws Exception {
         if (!characterRepository.existsById(characterId))
             throw new Exception("존재하지 않는 캐릭터 ID입니다. : " + characterId);
+    }
+
+    public User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자 id: " + userId));
     }
 
     public User createUser(CreateUserReq createUserReq) throws Exception {
