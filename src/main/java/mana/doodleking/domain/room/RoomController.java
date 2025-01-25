@@ -17,6 +17,7 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 @Slf4j
+@RestController
 public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
