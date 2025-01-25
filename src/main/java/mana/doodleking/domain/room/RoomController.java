@@ -9,12 +9,10 @@ import mana.doodleking.global.MessageSender;
 import mana.doodleking.global.swagger.RoomControllerDocs;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @AllArgsConstructor
 @Slf4j
 @RestController
