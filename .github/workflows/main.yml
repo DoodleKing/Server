@@ -4,7 +4,7 @@ name: main
 # 2 워크플로가 시작될 조건 지정
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop ]
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - name: make application-mysql.yml
         run: |
             cd ./src/main/resources
-          echo "${{ secrets.PROPERTIES }}" >> ./application.properties
+            echo "${{ secrets.PROPERTIES }}" >> ./application.properties
       
       - run: cat ./src/main/resources/application.properties
          
