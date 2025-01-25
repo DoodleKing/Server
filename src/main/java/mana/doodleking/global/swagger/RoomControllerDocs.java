@@ -10,7 +10,6 @@ import java.util.List;
 
 @Tag(name = "게임방 API", description = "게임방 생성, 조회 및 관련 기능 제공")
 public interface RoomControllerDocs {
-    @GetMapping
     @Operation(
         summary = "게임방 목록 조회(테스트용)",
         description = "현재 생성된 게임방 목록을 전체 조회"

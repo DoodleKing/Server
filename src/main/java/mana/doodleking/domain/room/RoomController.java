@@ -21,6 +21,7 @@ public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
 
+    @GetMapping("")
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
