@@ -1,36 +1,39 @@
-# 1 워크플로의 이름 지정
 name: main
 
-# 2 워크플로가 시작될 조건 지정
 on:
   push:
     branches: [ develop ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # 3 실행 환경 지정
-    #4 실행 스텝 지정
-    # uses: uses 키워드는 지정한 리포지토리를 확인하고 코드에 대한 작업을 실행할 수 있습니다.
-    # action/check-out에는 checkout이라는 작업의 v3 버전을 실행합니다.
-    # name: 스텝의 이름을 지정합니다.
-    # run: run 키워드는 실행할 명령어를 입력합니다.
-    # ./gradlew clean build에는 그레들을 사용해 프로젝트를 빌드 이전 상태로 돌리고 다시 빌드하는 명령어를 실행합니다.
+    runs-on: ubuntu-latest
     steps:
+      # 1. 소스 코드 체크아웃
       - uses: actions/checkout@v3
 
+      # 2. 현재 디렉토리 구조 확인
+      - name: Show current directory structure
+        run: |
+          pwd
+          ls -R
+
+      # 3. Java 설정
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
-          
-      - name: make application-mysql.yml
-        run: echo "${{ secrets.PROPERTIES }}" >> application.properties
-        working-directory: ./src/main/resources
+
+      # 4. application.properties 생성
+      - name: Ensure resources directory exists
+        run: mkdir -p ./src/main/resources
+
+      - name: Make application.properties
+        run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
             
       - name: Verify application.properties
-        run: cat application.properties
-        working-directory: ./src/main/resources
+        run: cat ./src/main/resources/application.properties
          
+      # 5. Gradle 빌드
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         working-directory: .
@@ -39,23 +42,24 @@ jobs:
         run: ./gradlew clean build -x test
         working-directory: .
       
-      # github artifact에 jar파일 복사
+      # 6. 빌드 아티팩트 업로드
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
           path: ./build/libs/*.jar
 
-      - name: Copy jar file to remote
+      # 7. JAR 파일 원격 서버로 복사
+      - name: Copy JAR file to remote
         uses: appleboy/scp-action@master
         with:
           username: seojkim0128
           host: ${{ secrets.GCP_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./build/libs/*.jar"
-          target: "./cicd"
-          strip_components: 2
+          target: "/home/seojkim0128/Server/cicd"
 
+      # 8. 배포 스크립트 복사
       - name: Copy deploy script file to remote
         uses: appleboy/scp-action@master
         with:
@@ -63,8 +67,9 @@ jobs:
           host: ${{ secrets.GCP_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./cicd/deploy.sh"
-          target: "./cicd"
+          target: "/home/seojkim0128/Server/cicd"
 
+      # 9. 배포 스크립트 실행
       - name: Execute deploy script
         uses: appleboy/ssh-action@master
         with:
@@ -73,5 +78,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            chmod +x ./cicd/deploy.sh
-            sh ./cicd/deploy.sh
+            chmod +x /home/seojkim0128/Server/cicd/deploy.sh
+            sh /home/seojkim0128/Server/cicd/deploy.sh
