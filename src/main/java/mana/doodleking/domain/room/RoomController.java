@@ -16,10 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 @RestController
+@RequestMapping("/api/v1")
 public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
-    @GetMapping("/api/v1/room")
+    @GetMapping("/room")
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
