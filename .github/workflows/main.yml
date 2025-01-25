@@ -24,27 +24,27 @@ jobs:
           java-version: '21'
           
       - name: make application-mysql.yml
-        run: |
-            cd /home/seojkim0128/Server/src/main/resources
-            echo "${{ secrets.PROPERTIES }}" >> application.properties
+        run: echo "${{ secrets.PROPERTIES }}" >> application.properties
+        working-directory: ./src/main/resources
             
       - name: Verify application.properties
-        run: cat /home/seojkim0128/Server/src/main/resources/application.properties
+        run: cat application.properties
+        working-directory: ./src/main/resources
          
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        working-directory: /home/seojkim0128/Server
+        working-directory: .
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
-        working-directory: /home/seojkim0128/Server
+        working-directory: .
       
       # github artifact에 jar파일 복사
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: /home/seojkim0128/Server/build/libs/*.jar
+          path: ./build/libs/*.jar
 
       - name: Copy jar file to remote
         uses: appleboy/scp-action@master
@@ -52,8 +52,8 @@ jobs:
           username: seojkim0128
           host: ${{ secrets.GCP_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "/home/seojkim0128/Server/build/libs/*.jar"
-          target: "/home/seojkim0128/Server/cicd"
+          source: "./build/libs/*.jar"
+          target: "./cicd"
           strip_components: 2
 
       - name: Copy deploy script file to remote
@@ -62,8 +62,8 @@ jobs:
           username: seojkim0128
           host: ${{ secrets.GCP_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "/home/seojkim0128/Server/cicd/deploy.sh"
-          target: "/home/seojkim0128/Server/cicd"
+          source: "./cicd/deploy.sh"
+          target: "./cicd"
 
       - name: Execute deploy script
         uses: appleboy/ssh-action@master
@@ -73,5 +73,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            chmod +x /home/seojkim0128/Server/cicd/deploy.sh
-            sh /home/seojkim0128/Server/cicd/deploy.sh
+            chmod +x ./cicd/deploy.sh
+            sh ./cicd/deploy.sh
