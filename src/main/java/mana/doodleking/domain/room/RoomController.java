@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/room")
+@RequestMapping("/api/room")
 public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
