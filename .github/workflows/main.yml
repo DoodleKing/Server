@@ -23,6 +23,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Verify current directory structure
+        run: |
+          pwd
+          ls -R
+    
       # 4. application.properties 생성
       - name: Ensure resources directory exists
         run: mkdir -p ./src/main/resources
