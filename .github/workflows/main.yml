@@ -41,15 +41,23 @@ jobs:
         run: ./gradlew clean build -x test
       
       # 6. 빌드 결과를 원격 서버로 복사
-      - name: Copy JAR and deploy script to remote
+      - name: Copy JAR to remote
         uses: appleboy/scp-action@master
         with:
           username: seojkim0128
           host: ${{ secrets.GCP_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: |
-            ./build/libs/*.jar
-            ./deploy.sh
+          source: "./build/libs/*.jar"
+          target: "/home/seojkim0128/Server/cicd"
+
+      # 7. 배포 스크립트를 원격 서버로 복사
+      - name: Copy deploy script to remote
+        uses: appleboy/scp-action@master
+        with:
+          username: seojkim0128
+          host: ${{ secrets.GCP_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "deploy.sh"
           target: "/home/seojkim0128/Server/cicd"
 
       # 7. 배포 스크립트 실행
@@ -60,6 +68,5 @@ jobs:
           username: seojkim0128
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/seojkim0128/Server/cicd
-            chmod +x deploy.sh
-            ./deploy.sh
+            chmod +x /home/seojkim0128/Server/cicd/deploy.sh
+            sh /home/seojkim0128/Server/cicd/deploy.sh
