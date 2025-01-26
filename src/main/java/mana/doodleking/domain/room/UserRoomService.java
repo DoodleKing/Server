@@ -6,6 +6,7 @@ import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserRole;
+import mana.doodleking.domain.user.enums.UserState;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -36,5 +37,15 @@ public class UserRoomService {
         userRoom.setRole(UserRole.LEADER);
 
         userRoomRepository.save(userRoom);
+    }
+
+    public void checkUserStatus(Room room, User user) {
+        // 사용자 All Ready
+        if (!userRoomRepository.findAllByRoomAndState(room, UserState.NOT_READY).isEmpty())
+            throw new RuntimeException("준비되지 않은 유저가 있습니다.");
+
+        // 요청한 유저가 방장인지
+        if (userRoomRepository.findUserRoomByUser(user).getRole().equals(UserRole.MEMBER))
+            throw new RuntimeException("방장이 아닙니다.");
     }
 }
