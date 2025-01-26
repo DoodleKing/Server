@@ -50,31 +50,14 @@ jobs:
           source: "./build/libs/*.jar"
           target: "/home/seojkim0128/Server/cicd"
 
-      - name: Print current directory
-        run: pwd
-      - name: List files in workspace
-        run: ls -l
-      - name: List files in ./cicd directory
-        run: ls -l ./cicd
-
-      # 7. 배포 스크립트 복사
-      - name: Copy deploy script file to remote
-        uses: appleboy/scp-action@master
-        with:
-          username: seojkim0128
-          host: ${{ secrets.GCP_HOST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./cicd/deploy.sh" # 수정된 경로
-          target: "/home/seojkim0128/Server/cicd"
-          
-      # 8. 배포 스크립트 실행
-      - name: Execute deploy script
+      # 7. 배포 스크립트 실행
+      - name: Execute deploy script on remote server
         uses: appleboy/ssh-action@master
         with:
-          username: seojkim0128
           host: ${{ secrets.GCP_HOST }}
+          username: seojkim0128
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
           script: |
-            chmod +x /home/seojkim0128/Server/cicd/deploy.sh
-            sh /home/seojkim0128/Server/cicd/deploy.sh
+            cd /home/seojkim0128/Server/cicd
+            chmod +x deploy.sh
+            ./deploy.sh
