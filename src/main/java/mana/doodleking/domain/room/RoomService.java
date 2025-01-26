@@ -59,10 +59,10 @@ public class RoomService {
         userRoomService.checkUserInRoom(user);
 
         // 방 현재 인원 변경
-        enterRoom.setCurPlayer(enterRoom.getCurPlayer() + 1L);
+        canEnterRoom(enterRoom);
 
         // 유저 방 소속 관계 생성
-        userRoomRepository.save(userRoomRepository.save(UserRoom.of(UserRole.MEMBER, user, enterRoom)));
+        userRoomRepository.save(UserRoom.of(UserRole.MEMBER, user, enterRoom));
         return RoomDetail.from(enterRoom);
     }
 
@@ -89,5 +89,13 @@ public class RoomService {
 
     private void deleteRoom(Long roomId) {
         roomRepository.delete(roomRepository.findByIdOrThrow(roomId));
+    }
+
+    private void canEnterRoom(Room enterRoom) {
+        if (enterRoom.getCurPlayer().equals(enterRoom.getMaxPlayer()))
+            throw new RuntimeException("해당 방의 인원이 모두 찼습니다. : " + enterRoom.getId());
+
+        enterRoom.setCurPlayer(enterRoom.getCurPlayer() + 1L);
+        roomRepository.save(enterRoom);
     }
 }
