@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.*;
+import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
@@ -97,5 +98,15 @@ public class RoomService {
 
         enterRoom.setCurPlayer(enterRoom.getCurPlayer() + 1L);
         roomRepository.save(enterRoom);
+    }
+
+    public void checkRoomStatus(Room startRoom) {
+        // 방 인원이 2명 이상인지
+        if (startRoom.getCurPlayer() > 1)
+            throw new RuntimeException("시작 인원이 부족합니다. : " + startRoom.getCurPlayer());
+
+        // 방 상태가 WAIT인지
+        if (!startRoom.getRoomState().equals(RoomState.WAIT))
+            throw new RuntimeException("게임을 시작할 수 없는 상태입니다. : " + startRoom.getRoomState());
     }
 }
