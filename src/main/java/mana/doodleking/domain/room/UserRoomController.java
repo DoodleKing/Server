@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.dto.UserStateDTO;
 import mana.doodleking.domain.user.enums.UserState;
 import mana.doodleking.global.MessageSender;
+import mana.doodleking.global.swagger.UserRoomControllerDocs;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @AllArgsConstructor
-public class UserRoomController {
+public class UserRoomController implements UserRoomControllerDocs {
     private final UserRoomService userRoomService;
     private final MessageSender messageSender;
 
