@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.*;
+import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
@@ -92,6 +93,9 @@ public class RoomService {
     }
 
     private void canEnterRoom(Room enterRoom) {
+        if (!enterRoom.getRoomState().equals(RoomState.WAIT))
+            throw new RuntimeException("방에 입장이 불가능합니다. : " + enterRoom.getRoomState());
+
         if (enterRoom.getCurPlayer().equals(enterRoom.getMaxPlayer()))
             throw new RuntimeException("해당 방의 인원이 모두 찼습니다. : " + enterRoom.getId());
 
