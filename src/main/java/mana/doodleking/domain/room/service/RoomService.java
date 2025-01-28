@@ -105,7 +105,7 @@ public class RoomService {
 
     public void checkRoomStatus(Room startRoom) {
         // 방 인원이 2명 이상인지
-        if (startRoom.getCurPlayer() > 1)
+        if (startRoom.getCurPlayer() < 2)
             throw new RuntimeException("시작 인원이 부족합니다. : " + startRoom.getCurPlayer());
 
         // 방 상태가 WAIT인지
