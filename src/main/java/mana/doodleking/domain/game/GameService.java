@@ -5,6 +5,7 @@ import mana.doodleking.domain.room.RoomService;
 import mana.doodleking.domain.room.UserRoomService;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
+import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
@@ -32,9 +33,9 @@ public class GameService {
     private static final String PREFIX_TURN = "TURN";
 
     @Transactional
-    public void startGame(Long userId, StartGameInfo startGameInfo) {
+    public void startGame(Long userId, RoomIdDTO roomIdDTO) {
         User user = userRepository.findByIdOrThrow(userId);
-        Room startRoom = roomRepository.findByIdOrThrow(startGameInfo.getId());
+        Room startRoom = roomRepository.findByIdOrThrow(roomIdDTO.getRoomId());
 
         canStartGame(startRoom, user);
         startRoom.setRoomState(RoomState.PLAY);
@@ -51,7 +52,7 @@ public class GameService {
         redisTemplate.opsForValue()
                 .set(PREFIX_GAME + startRoom.getId(),
                         RedisGameDTO.from(startRoom, createScore(startRoom)),
-                        Duration.ofSeconds((startRoom.getTime() * startRoom.getRound())));
+                        Duration.ofSeconds((startRoom.getTime() * startRoom.getRound()) + 10));
     }
 
     private List<Map<String, Long>> createScore(Room room) {
