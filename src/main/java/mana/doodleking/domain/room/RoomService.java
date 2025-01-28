@@ -93,6 +93,9 @@ public class RoomService {
     }
 
     private void canEnterRoom(Room enterRoom) {
+        if (!enterRoom.getRoomState().equals(RoomState.WAIT))
+            throw new RuntimeException("방에 입장이 불가능합니다. : " + enterRoom.getRoomState());
+
         if (enterRoom.getCurPlayer().equals(enterRoom.getMaxPlayer()))
             throw new RuntimeException("해당 방의 인원이 모두 찼습니다. : " + enterRoom.getId());
 
