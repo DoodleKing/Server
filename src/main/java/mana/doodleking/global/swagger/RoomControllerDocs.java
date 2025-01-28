@@ -16,7 +16,7 @@ public interface RoomControllerDocs {
     )
     List<RoomSimple> getRoomList();
 
-    @GetMapping("/createRoom(socket)")
+    @GetMapping("/app/createRoom")
     @Operation(
         summary = "새로운 게임방 생성",
         description = """

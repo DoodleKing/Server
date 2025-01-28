@@ -3,9 +3,12 @@ package mana.doodleking.domain.room;
 import lombok.RequiredArgsConstructor;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
+import mana.doodleking.domain.room.dto.UserStateDTO;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserRole;
+import mana.doodleking.domain.user.enums.UserState;
+import mana.doodleking.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -14,6 +17,7 @@ import java.util.Comparator;
 @RequiredArgsConstructor
 public class UserRoomService {
     private final UserRoomRepository userRoomRepository;
+    private final UserRepository userRepository;
 
     public void checkUserInRoom(User user) {
         if (userRoomRepository.existsUserRoomByUser(user))
@@ -23,6 +27,13 @@ public class UserRoomService {
     public void isUserInRoom(User user, Room room) {
         if (!userRoomRepository.findUserRoomByUser(user).getRoom().equals(room))
             throw new RuntimeException("유저가 해당 방에 속해있지 않습니다. User: " + user.getId() + " Room: " + room.getId());
+    }
+
+    public Long getRoomIdByUserId(Long userId) {
+        User user = userRepository.findByIdOrThrow(userId);
+        Room room;
+        room = userRoomRepository.findUserRoomByUser(user).getRoom();
+        return room.getId();
     }
 
     public void updateUserToLeader(Room room) {
@@ -36,5 +47,15 @@ public class UserRoomService {
         userRoom.setRole(UserRole.LEADER);
 
         userRoomRepository.save(userRoom);
+    }
+
+    public UserStateDTO setUserState(Long userId, UserState state) {
+        User user = userRepository.findByIdOrThrow(userId);
+
+        UserRoom userRoom = userRoomRepository.findUserRoomByUser(user);
+        userRoom.setState(state);
+
+        userRoomRepository.save(userRoom);
+        return UserStateDTO.of(userId, state);
     }
 }
