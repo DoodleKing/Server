@@ -8,6 +8,7 @@ import mana.doodleking.domain.room.RoomService;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.dto.RoomSimple;
 import mana.doodleking.global.MessageSender;
+import mana.doodleking.global.swagger.GameControllerDocs;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Controller
-public class GameController {
+public class GameController implements GameControllerDocs {
     private final GameService gameService;
     private final RoomService roomService;
     private final MessageSender messageSender;
