@@ -1,10 +1,12 @@
 package mana.doodleking.domain.game;
 
 import lombok.Builder;
+import lombok.Getter;
 import mana.doodleking.domain.room.domain.Room;
 
 import java.util.*;
 
+@Getter
 public class RedisGameDTO {
     private Long totalTurn;
     private Long curTurn;
