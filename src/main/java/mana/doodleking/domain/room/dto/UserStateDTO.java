@@ -2,10 +2,11 @@ package mana.doodleking.domain.room.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import mana.doodleking.domain.user.enums.UserState;
 
 @Builder
-@Data
+@Getter
 public class UserStateDTO {
     Long userId;
     UserState state;

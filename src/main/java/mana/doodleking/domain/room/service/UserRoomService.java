@@ -31,8 +31,7 @@ public class UserRoomService {
 
     public Long getRoomIdByUserId(Long userId) {
         User user = userRepository.findByIdOrThrow(userId);
-        Room room;
-        room = userRoomRepository.findUserRoomByUser(user).getRoom();
+        Room room = userRoomRepository.findUserRoomByUser(user).getRoom();
         return room.getId();
     }
 
