@@ -1,4 +1,4 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.service;
 
 import lombok.AllArgsConstructor;
 import mana.doodleking.domain.room.domain.Room;

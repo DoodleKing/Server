@@ -1,6 +1,7 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.controller;
 
 import lombok.AllArgsConstructor;
+import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.room.dto.UserStateDTO;
 import mana.doodleking.domain.user.enums.UserState;
 import mana.doodleking.global.MessageSender;
