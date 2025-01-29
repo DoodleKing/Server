@@ -1,9 +1,10 @@
-package mana.doodleking.domain.room;
+package mana.doodleking.domain.room.controller;
 
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mana.doodleking.domain.room.service.RoomService;
 import mana.doodleking.domain.room.dto.*;
 import mana.doodleking.global.MessageSender;
 import mana.doodleking.global.swagger.RoomControllerDocs;
@@ -16,12 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/room")
 public class RoomController implements RoomControllerDocs {
     private final RoomService roomService;
     private final MessageSender messageSender;
 
-    @GetMapping
+    @GetMapping("/api/v1/room")
     public List<RoomSimple> getRoomList() {
         return roomService.getRoomList();
     }
