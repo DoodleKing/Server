@@ -51,10 +51,11 @@ public class GameService {
     }
 
     private void setRedis(Room startRoom) {
-        redisTemplate.opsForValue()
-                .set(PREFIX_GAME + startRoom.getId(),
-                        RedisGameDTO.from(startRoom, createScore(startRoom)),
-                        Duration.ofSeconds((startRoom.getTime() * startRoom.getRound()) + 10));
+        String key = PREFIX_GAME + startRoom.getId();
+        RedisGameDTO value = RedisGameDTO.from(startRoom, createScore(startRoom));
+        Duration ttl = Duration.ofSeconds((startRoom.getTime() * startRoom.getRound()) + 10);
+
+        redisTemplate.opsForValue().set(key, value, ttl);
     }
 
     private List<Map<String, Long>> createScore(Room room) {
