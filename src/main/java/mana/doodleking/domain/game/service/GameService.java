@@ -1,24 +1,26 @@
-package mana.doodleking.domain.game;
+package mana.doodleking.domain.game.service;
 
 import lombok.RequiredArgsConstructor;
-import mana.doodleking.domain.room.RoomService;
-import mana.doodleking.domain.room.UserRoomService;
+import mana.doodleking.domain.game.dto.GameStatusDTO;
+import mana.doodleking.domain.game.dto.PlayerScoreDTO;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
+import mana.doodleking.domain.room.service.RoomService;
+import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class GameService {
     private static final String PREFIX_TURN = "TURN";
 
     @Transactional
-    public void startGame(Long userId, RoomIdDTO roomIdDTO) {
+    public GameStatusDTO startGame(Long userId, RoomIdDTO roomIdDTO) {
         User user = userRepository.findByIdOrThrow(userId);
         Room startRoom = roomRepository.findByIdOrThrow(roomIdDTO.getRoomId());
 
@@ -41,6 +43,11 @@ public class GameService {
         startRoom.setRoomState(RoomState.PLAY);
 
         setRedis(startRoom);
+
+        return new GameStatusDTO(userRoomRepository.findAllByRoom(startRoom).stream()
+                .map(UserRoom::getUser)
+                .map(PlayerScoreDTO::from)
+                .toList());
     }
 
     private void canStartGame(Room startRoom, User user) {
@@ -49,10 +56,15 @@ public class GameService {
     }
 
     private void setRedis(Room startRoom) {
-        redisTemplate.opsForValue()
-                .set(PREFIX_GAME + startRoom.getId(),
-                        RedisGameDTO.from(startRoom, createScore(startRoom)),
-                        Duration.ofSeconds((startRoom.getTime() * startRoom.getRound()) + 10));
+        final String HASH_KEY = "user:score";
+
+        // redis에 Key-Value 형태로 값 저장
+        userRoomRepository.findAllByRoom(startRoom).stream()
+                .map(UserRoom::getUser)
+                .forEach(user -> redisTemplate.opsForHash().put(HASH_KEY, user.getName(), 0L));
+
+        // TTL 설정
+        redisTemplate.expire(HASH_KEY, startRoom.getTime() * (startRoom.getRound() + 1), TimeUnit.SECONDS);
     }
 
     private List<Map<String, Long>> createScore(Room room) {
