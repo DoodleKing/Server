@@ -1,6 +1,7 @@
 package mana.doodleking.domain.game;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
@@ -12,7 +13,6 @@ import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserState;
 import mana.doodleking.domain.user.repository.UserRepository;
-import mana.doodleking.domain.user.service.UserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,6 +86,7 @@ public class GameService {
     }
 
     private RedisGameDTO getGameResult(Long roomId) {
-        return RedisGameDTO.builder().build();
+        String key = PREFIX_GAME + roomId;
+        return (RedisGameDTO) redisTemplate.opsForValue().get(key);
     }
 }
