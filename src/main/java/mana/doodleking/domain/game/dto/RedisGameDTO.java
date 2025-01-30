@@ -1,4 +1,4 @@
-package mana.doodleking.domain.game;
+package mana.doodleking.domain.game.dto;
 
 import lombok.Builder;
 import lombok.Getter;
