@@ -11,15 +11,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
         // Key를 String 형식으로 직렬화
         template.setKeySerializer(new StringRedisSerializer());
-        // Value를 JSON 형식으로 직렬화
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        template.setHashKeySerializer(new StringRedisSerializer()); // hash 저장도 지원
 
+        // Value를 JSON 형식으로 직렬화
+        ObjectMapper objectMapper = new ObjectMapper();
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer); // hash 저장도 지원
         return template;
     }
 }
