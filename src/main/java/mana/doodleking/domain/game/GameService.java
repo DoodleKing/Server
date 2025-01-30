@@ -65,4 +65,22 @@ public class GameService {
                 })
                 .toList();
     }
+
+    @Transactional
+    public RedisGameDTO endGame(Long roomId) {
+        Room room = roomRepository.findByIdOrThrow(roomId);
+
+        // 모든 사용자 not ready 상태로 변경
+
+
+        // 게임방 정보 갱신
+        room.setRoomState(RoomState.WAIT);
+
+        // 완료된 게임 정보 반환
+        return getGameResult(roomId);
+    }
+
+    private RedisGameDTO getGameResult(Long roomId) {
+        return RedisGameDTO.builder().build();
+    }
 }

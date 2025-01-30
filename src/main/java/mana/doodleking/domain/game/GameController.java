@@ -41,4 +41,19 @@ public class GameController implements GameControllerDocs {
             messageSender.sendError("/queue/user/" + userId, e.getMessage());
         }
     }
+
+    @MessageMapping("/endGame")
+    public void endGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
+        try {
+            RedisGameDTO gameResult = gameService.endGame(roomIdDTO.getRoomId());
+            messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), gameResult);
+
+            List<RoomSimple> roomList = roomService.getRoomList();
+            messageSender.send("/topic/lobby", roomList);
+        }
+        catch (Exception e) {
+            log.warn(e.getMessage());
+            messageSender.sendError("/queue/user/" + userId, e.getMessage());
+        }
+    }
 }
