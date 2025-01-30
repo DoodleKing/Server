@@ -10,7 +10,9 @@ import mana.doodleking.domain.room.repository.UserRoomRepository;
 import mana.doodleking.domain.room.service.RoomService;
 import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.user.domain.User;
+import mana.doodleking.domain.user.enums.UserState;
 import mana.doodleking.domain.user.repository.UserRepository;
+import mana.doodleking.domain.user.service.UserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +73,9 @@ public class GameService {
         Room room = roomRepository.findByIdOrThrow(roomId);
 
         // 모든 사용자 not ready 상태로 변경
-
+        userRoomRepository.findAllByRoom(room).stream()
+                .map(UserRoom::getUser)
+                .forEach(user -> userRoomService.setUserState(user.getId(), UserState.NOT_READY));
 
         // 게임방 정보 갱신
         room.setRoomState(RoomState.WAIT);
