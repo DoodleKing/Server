@@ -56,12 +56,12 @@ public class GameService {
     }
 
     private void setRedis(Room startRoom) {
-        final String HASH_KEY = "user:score";
+        final String HASH_KEY = "GAME" + startRoom.getId();
 
         // redis에 Key-Value 형태로 값 저장
         userRoomRepository.findAllByRoom(startRoom).stream()
                 .map(UserRoom::getUser)
-                .forEach(user -> redisTemplate.opsForHash().put(HASH_KEY, user.getName(), 0L));
+                .forEach(user -> redisTemplate.opsForHash().put(HASH_KEY, user.getName(), "0"));
 
         // TTL 설정
         redisTemplate.expire(HASH_KEY, startRoom.getTime() * (startRoom.getRound() + 1), TimeUnit.SECONDS);
