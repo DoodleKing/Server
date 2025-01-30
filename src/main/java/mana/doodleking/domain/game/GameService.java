@@ -1,14 +1,14 @@
 package mana.doodleking.domain.game;
 
 import lombok.RequiredArgsConstructor;
-import mana.doodleking.domain.room.RoomService;
-import mana.doodleking.domain.room.UserRoomService;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.enums.RoomState;
 import mana.doodleking.domain.room.repository.RoomRepository;
 import mana.doodleking.domain.room.repository.UserRoomRepository;
+import mana.doodleking.domain.room.service.RoomService;
+import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
