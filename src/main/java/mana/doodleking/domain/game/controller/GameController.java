@@ -48,7 +48,6 @@ public class GameController implements GameControllerDocs {
     public void endGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
         try {
             GameStatusDTO gameResult = gameService.endGame(roomIdDTO.getRoomId());
-            log.info(gameResult.toString());
             messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), gameResult);
 
             List<RoomSimple> roomList = roomService.getRoomList();

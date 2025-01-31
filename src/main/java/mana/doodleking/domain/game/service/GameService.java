@@ -14,6 +14,7 @@ import mana.doodleking.domain.room.service.UserRoomService;
 import mana.doodleking.domain.user.domain.User;
 import mana.doodleking.domain.user.enums.UserState;
 import mana.doodleking.domain.user.repository.UserRepository;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,15 +59,16 @@ public class GameService {
     }
 
     private void setRedis(Room startRoom) {
-        final String HASH_KEY = "GAME" + startRoom.getId();
+        final String key = PREFIX_GAME + startRoom.getId();
+        HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
 
-        // redis에 Key-Value 형태로 값 저장
-        userRoomRepository.findAllByRoom(startRoom).stream()
-                .map(UserRoom::getUser)
-                .forEach(user -> redisTemplate.opsForHash().put(HASH_KEY, user.getName(), "0"));
+        hashOps.put(key, "totalTurn", startRoom.getRound());
+        hashOps.put(key, "curTurn", 0);
+        hashOps.put(key, "player", startRoom.getCurPlayer());
+        hashOps.put(key, "score", createScore(startRoom));
 
         // TTL 설정
-        redisTemplate.expire(HASH_KEY, startRoom.getTime() * (startRoom.getRound() + 1), TimeUnit.SECONDS);
+        redisTemplate.expire(key, startRoom.getTime() * (startRoom.getRound() + 1), TimeUnit.SECONDS);
     }
 
     private List<Map<String, Long>> createScore(Room room) {
@@ -73,7 +76,7 @@ public class GameService {
                 .map(UserRoom::getUser)
                 .map(user -> {
                     Map<String, Long> scoreMap = new HashMap<>();
-                    scoreMap.put(user.getName(), 0L);
+                    scoreMap.put(String.valueOf(user.getId()), 0L);
                     return scoreMap;
                 })
                 .toList();
@@ -95,8 +98,30 @@ public class GameService {
         return getGameResult(roomId);
     }
 
-    private GameStatusDTO getGameResult(Long roomId) {
+    public GameStatusDTO getGameResult(Long roomId) {
         String key = PREFIX_GAME + roomId;
-        return (GameStatusDTO) redisTemplate.opsForValue().get(key);
+        HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
+        Object scoreObj = hashOps.get(key, "score");
+        List<?> scoreList = (List<?>) scoreObj;
+
+        // Redis에 저장한 score 리스트를 PlayerScoreDTO애 매핑
+        List<PlayerScoreDTO> playerScoreDTOList = scoreList.stream()
+                .filter(item -> item instanceof Map<?, ?>)
+                .map(this::mapToPlayerScoreDTO)
+                .collect(Collectors.toList());
+
+        return new GameStatusDTO(playerScoreDTOList);
+    }
+
+    private PlayerScoreDTO mapToPlayerScoreDTO(Object item) {
+        Map<String, Integer> scoreMap = (Map<String, Integer>) item;
+        Long userNumber = Long.valueOf(scoreMap.keySet().iterator().next());
+        Long score = scoreMap.get(userNumber.toString()).longValue();
+
+        // 사용자 id 따른 User 객체 조회
+        User user = userRepository.findByIdOrThrow(userNumber);
+
+        // PlayerScoreDTO 생성
+        return PlayerScoreDTO.from(user, score);
     }
 }
