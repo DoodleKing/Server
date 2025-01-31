@@ -3,18 +3,14 @@ package mana.doodleking.global.swagger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import mana.doodleking.domain.room.dto.CreateRoomReq;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
-import mana.doodleking.domain.room.dto.RoomSimple;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
 
 @Tag(name = "게임 API", description = "게임 플레이와 관련된 기능 제공")
 public interface GameControllerDocs {
 
-    @GetMapping("/startGame")
+    @GetMapping("/app/startGame")
     @Operation(
         summary = "게임 시작",
         description = """

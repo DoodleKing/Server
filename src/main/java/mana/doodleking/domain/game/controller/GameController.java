@@ -1,9 +1,12 @@
-package mana.doodleking.domain.game;
+package mana.doodleking.domain.game.controller;
 
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mana.doodleking.domain.game.dto.GameStatusDTO;
+import mana.doodleking.domain.game.dto.RedisGameDTO;
+import mana.doodleking.domain.game.service.GameService;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.dto.RoomSimple;
 import mana.doodleking.domain.room.service.RoomService;
@@ -26,8 +29,8 @@ public class GameController implements GameControllerDocs {
     @MessageMapping("/startGame")
     public void startGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
         try {
-            gameService.startGame(userId, roomIdDTO);
-            messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), "Start GAME");
+            GameStatusDTO gameStatus = gameService.startGame(userId, roomIdDTO);
+            messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), gameStatus);
 
             List<RoomSimple> roomList = roomService.getRoomList();
             messageSender.send("/topic/lobby", roomList);

@@ -15,13 +15,13 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        // Key를 String 형식으로 직렬화
+        // Key, HashKey를 String 형식으로 직렬화
         template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer()); // hash 저장도 지원
+        template.setHashKeySerializer(new StringRedisSerializer());
 
-        // Value를 JSON 형식으로 직렬화
         ObjectMapper objectMapper = new ObjectMapper();
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+        // Value와 HashValue를 JSON으로 저장
         template.setValueSerializer(serializer);
         template.setHashValueSerializer(serializer); // hash 저장도 지원
         return template;
