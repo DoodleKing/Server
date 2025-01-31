@@ -3,7 +3,6 @@ package mana.doodleking.domain.game.service;
 import lombok.RequiredArgsConstructor;
 import mana.doodleking.domain.game.dto.GameStatusDTO;
 import mana.doodleking.domain.game.dto.PlayerScoreDTO;
-import mana.doodleking.domain.game.dto.RedisGameDTO;
 import mana.doodleking.domain.room.domain.Room;
 import mana.doodleking.domain.room.domain.UserRoom;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
@@ -81,7 +80,7 @@ public class GameService {
     }
 
     @Transactional
-    public RedisGameDTO endGame(Long roomId) {
+    public GameStatusDTO endGame(Long roomId) {
         Room room = roomRepository.findByIdOrThrow(roomId);
 
         // 모든 사용자 not ready 상태로 변경
@@ -96,8 +95,8 @@ public class GameService {
         return getGameResult(roomId);
     }
 
-    private RedisGameDTO getGameResult(Long roomId) {
+    private GameStatusDTO getGameResult(Long roomId) {
         String key = PREFIX_GAME + roomId;
-        return (RedisGameDTO) redisTemplate.opsForValue().get(key);
+        return (GameStatusDTO) redisTemplate.opsForValue().get(key);
     }
 }

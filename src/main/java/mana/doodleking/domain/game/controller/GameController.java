@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mana.doodleking.domain.game.dto.GameStatusDTO;
-import mana.doodleking.domain.game.dto.RedisGameDTO;
 import mana.doodleking.domain.game.service.GameService;
 import mana.doodleking.domain.room.dto.RoomIdDTO;
 import mana.doodleking.domain.room.dto.RoomSimple;
@@ -48,7 +47,7 @@ public class GameController implements GameControllerDocs {
     @MessageMapping("/endGame")
     public void endGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
         try {
-            RedisGameDTO gameResult = gameService.endGame(roomIdDTO.getRoomId());
+            GameStatusDTO gameResult = gameService.endGame(roomIdDTO.getRoomId());
             log.info(gameResult.toString());
             messageSender.send("/topic/room/" + roomIdDTO.getRoomId(), gameResult);
 
