@@ -20,4 +20,15 @@ public interface GameControllerDocs {
         """
     )
     void startGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO);
+
+    @GetMapping("/app/endGame")
+    @Operation(
+            summary = "게임 종료",
+            description = """
+        서버 내부에서 호출되는 게임 종료입니다. (마지막 라운드에 모든 사용자가 정답을 맞추거나, 라운드 시간이 종료되면 호출)\n
+        전체 게임방 목록이 요청한 사용자(/topic/lobby)에게 전송되며,
+        게임 결과가 참여자들에게 전송되며, 방에 대한 정보(사용자 준비 상태, 방의 상태)가 갱신됩니다.
+        """
+    )
+    void endGame(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO);
 }
