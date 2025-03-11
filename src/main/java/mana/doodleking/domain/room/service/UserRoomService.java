@@ -57,4 +57,14 @@ public class UserRoomService {
         userRoomRepository.save(userRoom);
         return UserStateDTO.of(userId, state);
     }
+
+    public void checkUserStatus(Room room, User user) {
+        // 사용자 All Ready
+        if (!userRoomRepository.findAllByRoomAndState(room, UserState.NOT_READY).isEmpty())
+            throw new RuntimeException("준비되지 않은 유저가 있습니다.");
+
+        // 요청한 유저가 방장인지
+        if (userRoomRepository.findUserRoomByUser(user).getRole().equals(UserRole.MEMBER))
+            throw new RuntimeException("방장이 아닙니다.");
+    }
 }

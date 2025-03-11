@@ -53,7 +53,7 @@ public class RoomController implements RoomControllerDocs {
     }
 
     @MessageMapping("/enterRoom")
-    public void enterRoom(@Header("userId") Long userId, RoomIdDTO roomIdDTO) {
+    public void enterRoom(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
         try {
             RoomDetail enterRoom = roomService.enterRoom(userId, roomIdDTO);
             messageSender.send("/queue/user/" + userId, enterRoom);
@@ -74,7 +74,7 @@ public class RoomController implements RoomControllerDocs {
     }
 
     @MessageMapping("/quitRoom")
-    public void quitRoom(@Header("userId") Long userId, RoomIdDTO roomIdDTO) {
+    public void quitRoom(@Header("userId") Long userId, @Valid RoomIdDTO roomIdDTO) {
         try {
             RoomDetail quitRoom = roomService.quitRoom(userId, roomIdDTO);
             messageSender.send("/queue/user/" + userId, quitRoom);
